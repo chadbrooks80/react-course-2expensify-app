@@ -26,26 +26,38 @@ test('should not remove expense if id is not found', () => {
 });
 
 test('should add an expense', () => {
-    const newExpense = {
+    const expense = {
+        id: '100',
         description: "new Expense",
         amount: 20500,
         createdAt: moment(0).add(4, 'days')
     };
     const action = {
-        test('should remove expense by id', () => {
-            const action = {
-                id: expenses[1].id
-            };
-            const state = expensesReducer(expenses, action);
-            expect(state).toEqual([expenses[0],expenses[2]]);
-        });
-        expense: newExpense
+        type: 'ADD_EXPENSE',
+        expense
     }
-    const state = expensesReducer(expenses, expense)
-    console.log(state)
+    const state = expensesReducer(expenses, action);
+    expect(state).toEqual([...expenses, expense])
 });
 
+test('should edit an expense', () => {
+    const note = 'add note';
+    const action = {
+        id: '2',
+        type: 'EDIT_EXPENSE',
+        updates: { note }
+    }
+    const state = expensesReducer(expenses, action)
+    expect(state[1].note).toBe(note)
+});
 
-//should edit an expense
-
-//should not edit expense if expense not found. 
+test('should not edit expense if expense not found', () => {
+    const updates = { note: 'add note' };
+    const action = {
+        id: '-1',
+        type: 'EDIT_EXPENSE',
+        updates
+    }
+    const state = expensesReducer(expenses, action)
+    expect(state).toEqual(expenses)
+});
